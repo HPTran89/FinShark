@@ -1,21 +1,112 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0",
-    "RelativePath": "weatherforecast",
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "GetAll",
+    "RelativePath": "api/stock",
     "HttpMethod": "GET",
-    "IsController": false,
+    "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": [
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "Create",
+    "RelativePath": "api/stock",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Type": "WeatherForecast[]",
-        "MediaTypes": [
-          "application/json"
-        ],
-        "StatusCode": 200
+        "Name": "createStockRequestDto",
+        "Type": "api.DTOs.Stock.CreateStockRequestDto",
+        "IsRequired": true
       }
     ],
-    "EndpointName": "GetWeatherForecast"
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "GetById",
+    "RelativePath": "api/stock/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "Update",
+    "RelativePath": "api/stock/{symbol}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "symbol",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateStockRequestDto",
+        "Type": "api.DTOs.Stock.UpdateStockRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "Patch",
+    "RelativePath": "api/stock/{symbol}",
+    "HttpMethod": "PATCH",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "symbol",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "updateStockRequestDto",
+        "Type": "api.DTOs.Stock.UpdateStockRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "DeleteById",
+    "RelativePath": "api/stock/{symbol}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "symbol",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "api.Controllers.StockController",
+    "Method": "GetAllAsync",
+    "RelativePath": "api/stock/GetAllAsync",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
   }
 ]
