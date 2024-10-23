@@ -2,6 +2,7 @@
 
 using api.Data;
 using api.DTOs.Stock;
+using api.Interfaces;
 using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -13,52 +14,46 @@ namespace api.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        private readonly ApplicationDBContext applicationDBContext;
+        private readonly IStockRepository stockRepository;
 
-        public StockController(ApplicationDBContext applicationDBContext)
+        public StockController(IStockRepository stockRepository)
         {
-            this.applicationDBContext = applicationDBContext;
+            this.stockRepository = stockRepository;
         }
 
         [HttpGet]
-        public IActionResult GetAll()
-        {
-            var stockList = applicationDBContext.Stocks.ToList().Select(s => s.ToStockDto());
-
-            return Ok(stockList);
-        }
-
-        [HttpGet("GetAllAsync")]
         public async Task<IActionResult> GetAllAsync()
         {
-            var stockList = await applicationDBContext.Stocks.ToListAsync();
+            var stockList = await stockRepository.GetAllStocks();
             var result = stockList.Select((s => s.ToStockDto()));
 
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
+        [Route("{id}")]
         public async Task<IActionResult> GetByIdAsync([FromRoute] int id)
         {
-            Stock? stock = await applicationDBContext.Stocks.FindAsync(id);
+            Stock? stock = await stockRepository.GetStockById(id);
             if (stock == null)
             {
                 return NotFound();
-            }
+            } 
             return Ok(stock.ToStockDto());
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] CreateStockRequestDto createStockRequestDto)
         {
-            var model = createStockRequestDto.ToStockFromCreateDto();
             // symbol must be unique 
-            if(await applicationDBContext.Stocks.Where(s => s.Symbol.ToLower() ==  model.Symbol.ToLower()).AnyAsync())
+            if (await stockRepository.GetStockBySymbol(createStockRequestDto.Symbol) != null)
             {
-                return BadRequest("Symbol already exist in the DB");
+                return BadRequest("Stock already exist in the DB");
             }
-            await applicationDBContext.Stocks.AddAsync(model);
-            await applicationDBContext.SaveChangesAsync();
+
+            var model = createStockRequestDto.ToStockFromCreateDto();
+            await stockRepository.CreateStock(model);
+
             // calls GetById and pass in the required parameter then it will return the model.ToStockDto() in the response
             return CreatedAtAction(nameof(GetByIdAsync), new { id = model.Id }, model.ToStockDto());
         }
@@ -69,67 +64,32 @@ namespace api.Controllers
         /// <param name="symbol"></param>
         /// <param name="updateStockRequestDto"></param>
         /// <returns></returns>
-        [HttpPut("{symbol}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string symbol, [FromBody] UpdateStockRequestDto updateStockRequestDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] int id, [FromBody] UpdateStockRequestDto updateStockRequestDto)
         {
 
-            var modelForUpdate = await applicationDBContext.Stocks.Where(x => x.Symbol.ToLower() == symbol.ToLower()).FirstOrDefaultAsync();
-            if (modelForUpdate == null)
+            var stockForUpdate = await stockRepository.GetStockById(id);
+            if (stockForUpdate == null)
             {
                 return NotFound();
             }
+            await stockRepository.UpdateStock(stockForUpdate, updateStockRequestDto);
 
-            modelForUpdate.Symbol = updateStockRequestDto.Symbol;
-            modelForUpdate.CompanyName = updateStockRequestDto.CompanyName;
-            modelForUpdate.Purchase = updateStockRequestDto.Purchase;
-            modelForUpdate.Industry = updateStockRequestDto.Industry;
-            modelForUpdate.LastDiv = updateStockRequestDto.LastDiv;
-            modelForUpdate.MarketCap = updateStockRequestDto.MarketCap;
-            
-            await applicationDBContext.SaveChangesAsync();
-            return Ok(modelForUpdate.ToStockDto());
+            return Ok(stockForUpdate.ToStockDto());
         }
 
-        /// <summary>
-        /// Use this method to only pass in specfic field(s) for upate
-        /// </summary>
-        /// <param name="symbol"></param>
-        /// <param name="updateStockRequestDto"></param>
-        /// <returns></returns>
-        //[HttpPatch("{symbol}")]
-        //public IActionResult Patch([FromRoute] string symbol, [FromBody] UpdateStockRequestDto updateStockRequestDto)
-        //{
 
-        //    var modelForUpdate = applicationDBContext.Stocks.Where(x => x.Symbol.ToLower() == symbol.ToLower()).FirstOrDefault();
-        //    if (modelForUpdate == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    modelForUpdate.Symbol = updateStockRequestDto.Symbol;
-        //    modelForUpdate.CompanyName = updateStockRequestDto.CompanyName;
-        //    modelForUpdate.Purchase = updateStockRequestDto.Purchase;
-        //    modelForUpdate.Industry = updateStockRequestDto.Industry;
-        //    modelForUpdate.LastDiv = updateStockRequestDto.LastDiv;
-        //    modelForUpdate.MarketCap = updateStockRequestDto.MarketCap;
-
-        //    applicationDBContext.SaveChanges();
-        //    return Ok(modelForUpdate.ToStockDto());
-        //}
-
-        [HttpDelete("{symbol}")]
-        public async Task<IActionResult> DeleteByIdAsync([FromRoute] string symbol) 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteByIdAsync([FromRoute] int id) 
         {
-            var modelForDelete = await applicationDBContext.Stocks.Where(s => s.Symbol.ToLower() == symbol.ToLower()).FirstOrDefaultAsync();
+            var modelForDelete = await stockRepository.GetStockById(id);
             if(modelForDelete == null)
             {
                 return BadRequest();
             }
 
-            applicationDBContext.Remove(modelForDelete);
-            await applicationDBContext.SaveChangesAsync();
-
-            return Ok();
+            await stockRepository.DeleteStock(modelForDelete);
+            return Ok() ;
         
         }
 
