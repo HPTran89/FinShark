@@ -21,6 +21,7 @@ namespace api.Mappers
                 LastDiv = model.LastDiv,
                 Industry = model.Industry,
                 MarketCap = model.MarketCap,
+                Comments = model.Comments.Select(s => s.ToCommentDto()).ToList(),
             };
         }
 

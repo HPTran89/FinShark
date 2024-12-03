@@ -19,14 +19,14 @@ namespace api.Repositories
 
         public async Task<List<Stock>> GetAllStocks()
         {
-            var stocks = await context.Stocks.ToListAsync();
+            var stocks = await context.Stocks.Include(c => c.Comments).ToListAsync();
             return stocks;
 
         }
 
         public async Task<Stock?> GetStockById(int id)
         {
-            var stock = await context.Stocks.FindAsync(id);
+            var stock = await context.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(i => i.Id == id);
 
             return stock;
         }

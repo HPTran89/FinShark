@@ -11,9 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore );
 builder.Services.AddScoped<IStockRepository, StockRepository>()
         .AddProblemDetails()
         .AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>().AddProblemDetails().AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
@@ -33,8 +35,3 @@ app.UseHttpsRedirection();
 
 app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
