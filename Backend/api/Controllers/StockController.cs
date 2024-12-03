@@ -26,6 +26,7 @@ namespace api.Controllers
         {
             var stockList = await stockRepository.GetAllStocks();
             var result = stockList.Select((s => s.ToStockDto()));
+            //throw new ArgumentException("THis is calling the global exception handler");
 
             return Ok(result);
         }
