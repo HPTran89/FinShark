@@ -1,4 +1,6 @@
-﻿namespace api.DTOs.Comment
+﻿using api.DTOs.Stock;
+
+namespace api.DTOs.Comment
 {
     public class CommentDto
     {
@@ -7,5 +9,6 @@
         public string Content { get; set; } = string.Empty;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public int? StockId { get; set; }
+        public StockDto? Stock { get; set; }
     }
 }
