@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "api.Controllers.StockController",
-    "Method": "GetAll",
+    "Method": "GetAllAsync",
     "RelativePath": "api/stock",
     "HttpMethod": "GET",
     "IsController": true,
@@ -11,7 +11,7 @@
   },
   {
     "ContainingType": "api.Controllers.StockController",
-    "Method": "Create",
+    "Method": "CreateAsync",
     "RelativePath": "api/stock",
     "HttpMethod": "POST",
     "IsController": true,
@@ -27,7 +27,7 @@
   },
   {
     "ContainingType": "api.Controllers.StockController",
-    "Method": "GetById",
+    "Method": "GetByIdAsync",
     "RelativePath": "api/stock/{id}",
     "HttpMethod": "GET",
     "IsController": true,
@@ -43,15 +43,15 @@
   },
   {
     "ContainingType": "api.Controllers.StockController",
-    "Method": "Update",
-    "RelativePath": "api/stock/{symbol}",
+    "Method": "UpdateAsync",
+    "RelativePath": "api/stock/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "symbol",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       },
       {
@@ -64,49 +64,18 @@
   },
   {
     "ContainingType": "api.Controllers.StockController",
-    "Method": "Patch",
-    "RelativePath": "api/stock/{symbol}",
-    "HttpMethod": "PATCH",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "symbol",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "updateStockRequestDto",
-        "Type": "api.DTOs.Stock.UpdateStockRequestDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "api.Controllers.StockController",
-    "Method": "DeleteById",
-    "RelativePath": "api/stock/{symbol}",
+    "Method": "DeleteByIdAsync",
+    "RelativePath": "api/stock/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "symbol",
-        "Type": "System.String",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "api.Controllers.StockController",
-    "Method": "GetAllAsync",
-    "RelativePath": "api/stock/GetAllAsync",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
     "ReturnTypes": []
   }
 ]
