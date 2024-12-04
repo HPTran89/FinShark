@@ -5,6 +5,7 @@ using api.DTOs.Stock;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using api.Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,12 +23,12 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync([FromQuery] QueryObject query)
         {
-            var stockList = await stockRepository.GetAllStocks();
-            var result = stockList.Select((s => s.ToStockDto()));
-            //throw new ArgumentException("THis is calling the global exception handler");
+            if(!ModelState.IsValid) return BadRequest(ModelState);
 
+            var stockList = await stockRepository.GetAllStocks(query);
+            var result = stockList.Select((s => s.ToStockDto()));
             return Ok(result);
         }
 
