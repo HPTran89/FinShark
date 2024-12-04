@@ -5,13 +5,17 @@ namespace api.Data
 {
     public class ApplicationDBContext : DbContext
     {
+        public ApplicationDBContext()
+        {
+                
+        }
         public ApplicationDBContext(DbContextOptions options )
             :base (options)
         {
                 
         }
 
-        public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Stock> Stocks { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
     }
 }
