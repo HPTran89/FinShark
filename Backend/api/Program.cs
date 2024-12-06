@@ -16,10 +16,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore );
-builder.Services.AddScoped<IStockRepository, StockRepository>()
-        .AddProblemDetails()
-        .AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>().AddProblemDetails().AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
@@ -52,6 +48,11 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]))
     };
 });
+
+
+builder.Services.AddScoped<IStockRepository, StockRepository>().AddProblemDetails().AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>().AddProblemDetails().AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddScoped<ITokenService, TokenService>().AddProblemDetails().AddExceptionHandler<GlobalExceptionHandler>();
 
 
 var app = builder.Build();
