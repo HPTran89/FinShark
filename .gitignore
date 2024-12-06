@@ -2,8 +2,20 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/FinShark/DesignTimeBuild/.dtbcache.v2
-/.vs/FinShark/FileContentIndex/acc9940b-4713-4ea2-8af7-5f9c9202c767.vsidx
-/.vs/FinShark/FileContentIndex/88b671bd-06fb-4d90-ad92-90daf5e27cc5.vsidx
-/.vs/slnx.sqlite
-/.vs/VSWorkspaceState.json
+/build/
+*.suo
+*.user
+_ReSharper.*/
+*.sdf
+bin/
+obj/
+Debug/
+Release/
+*.opensdf
+*.tlog
+*.log
+TestResult.xml
+*.VisualState.xml
+Version.cs
+Version.h
+Version.cpp
