@@ -28,7 +28,7 @@ namespace api.Controllers
             if(!ModelState.IsValid) return BadRequest(ModelState);
 
             var stockList = await stockRepository.GetAllStocks(query);
-            var result = stockList.Select((s => s.ToStockDto()));
+            var result = stockList.Select(s => s.ToStockDto()).ToList();
             return Ok(result);
         }
 

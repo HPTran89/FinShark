@@ -43,23 +43,13 @@ namespace api.Repositories
 
         public async Task<List<Comment>> GetAllAsync()
         {
-            //return await _dbContext.Comments.Include(s => s.Stock).ToListAsync();
-
-            var comments = await _dbContext.Comments.Include(s => s.Stock).ToListAsync();
-            foreach (var item in comments)
-            {
-                if (item.Stock != null)
-                {
-                    item.Stock = new Stock { Id = item.Stock.Id, Symbol = item.Stock.Symbol, CompanyName = item.Stock.CompanyName };
-                }
-            }
-
+            var comments = await _dbContext.Comments.Include(s => s.AppUser).ToListAsync();
             return comments;
         }
 
         public async Task<Comment?> GetByIdAsync(int id)
         {
-            return await _dbContext.Comments.FindAsync(id);
+            return await _dbContext.Comments.Include(a => a.AppUser).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<Comment> UpdateAsync(int commentId, UpdateCommentRequestDto updateComment)
