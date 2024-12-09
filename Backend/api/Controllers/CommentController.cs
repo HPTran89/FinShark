@@ -1,7 +1,11 @@
 ﻿using api.DTOs.Comment;
+using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
+using api.Models;
 using api.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -12,18 +16,25 @@ namespace api.Controllers
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IStockRepository _stockRepository;
+        private readonly UserManager<AppUser> _userManager;
 
-        public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository)
+        public CommentController(ICommentRepository commentRepository, IStockRepository stockRepository, UserManager<AppUser> userManager)
         {
             _commentRepository = commentRepository;
             _stockRepository = stockRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
             var comments = await _commentRepository.GetAllAsync();
-            return Ok(comments);
+            var result = new List<CommentDto>();
+            foreach (var item in comments)
+            {
+                result.Add(item.ToCommentDto());
+            }
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
@@ -36,11 +47,14 @@ namespace api.Controllers
         }
 
         [HttpPost("{stockId}")]
+        [Authorize]
         public async Task<IActionResult> Create([FromRoute] int stockId, CreateCommentDto commentDto)
         {
             if (await _stockRepository.GetStockById(stockId) == null) { return BadRequest("Stock doe not exist"); }
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
 
-            var commentModel = commentDto.ToCommentFromCreate(stockId);
+            var commentModel = commentDto.ToCommentFromCreate(stockId, appUser);
 
             await _commentRepository.CreateAsync(commentModel);
 
@@ -49,6 +63,7 @@ namespace api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto commentDto)
         {
             var comment = await _commentRepository.UpdateAsync(id, commentDto);
@@ -59,6 +74,7 @@ namespace api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles ="ADMIN")]
         public async Task<IActionResult> Delete([FromBody] int id)
         {
 

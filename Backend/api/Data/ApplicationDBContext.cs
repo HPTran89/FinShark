@@ -19,10 +19,16 @@ namespace api.Data
 
         public virtual DbSet<Stock> Stocks { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Portfolio> Portfolios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            //create "binding" for join join table (portfolio)
+            builder.Entity<Portfolio>(x => x.HasKey(p => new { p.AppUserId, p.StockId }));
+            builder.Entity<Portfolio>().HasOne(u => u.AppUser).WithMany(u => u.Portfolios).HasForeignKey(p => p.AppUserId);
+            builder.Entity<Portfolio>().HasOne(u => u.Stock).WithMany(u => u.Portfolios).HasForeignKey(p => p.StockId);
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
